@@ -122,7 +122,9 @@ class FormDumperGenerator {
      */
     protected function getFormOpen($method, $model)
     {
-        $models = Pluralizer::plural($model);
+        // $models = Pluralizer::plural($model);
+
+        $models = $this->getTableName($model);
 
         if (preg_match('/edit|update|put|patch/i', $method))
         {
@@ -139,10 +141,23 @@ class FormDumperGenerator {
      */
     public function getTableInfo($model)
     {
-        $table = Pluralizer::plural($model);
+        // $table = Pluralizer::plural($model);
+        $table = $this->getTableName($model);
 
         return \DB::getDoctrineSchemaManager()->listTableDetails($table)->getColumns();
     }
+
+    /**
+     * Get the table name
+     * @param  string $model
+     * @return string
+     */
+    protected function getTableName($model)
+    {
+        return (new $model)->getTable() ?: Pluralizer::plural($model);
+    }
+
+
 
     /**
      * Calculate correct Formbuilder method
